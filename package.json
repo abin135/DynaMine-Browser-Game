@@ -1,0 +1,16 @@
+{
+  "name": "capstone_project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dynaMine.js",
+  "scripts": {
+    "start": "node ./dynaMine",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
