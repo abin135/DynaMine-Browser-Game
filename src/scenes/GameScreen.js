@@ -1,11 +1,13 @@
 import Phaser from "phaser"
 import ScoreLabel from "../ui/ScoreLabel"
 import BombSpawner from "./BombSpawner"
+import DiamondSpawner from "./DiamondSpawner"
 
 const GROUND_KEY = 'ground'
 const DUDE_KEY = 'dude'
 const ROCK_KEY = 'rock'
 const BOMB_KEY = 'bomb'
+const DIAMOND_KEY = 'diamond'
 
 export default class GameScreen extends Phaser.Scene {
     constructor() {
@@ -16,6 +18,7 @@ export default class GameScreen extends Phaser.Scene {
         this.scoreLabel = undefined
         this.rocks = undefined
         this.bombSpawner = undefined
+        this.diamondSpawner = undefined
 
         this.gameOver = false
     }
@@ -26,14 +29,16 @@ export default class GameScreen extends Phaser.Scene {
         this.load.image(GROUND_KEY, '/assets/wall.png')
         this.load.image(ROCK_KEY, '/assets/rock.png')
         this.load.image(BOMB_KEY, '/assets/bomb.png')
+        this.load.image(DIAMOND_KEY, '/assets/diamond.png')
         this.load.spritesheet(DUDE_KEY, '/assets/dude.png', { frameWidth: 32, frameHeight: 48 })
         this.load.image('replay', '/assets/replay.png')
         this.load.image('highscoresRed', '/assets/highscoresBtn.png')
+        this.load.image('saveScore', '/assets/savescores.png')
     }
 
     create()
     {
-        //  A simple background for our game
+        // background for game
         this.add.image(400, 300, 'cave')
         
         const walls = this.createWalls()
@@ -45,34 +50,41 @@ export default class GameScreen extends Phaser.Scene {
         this.bombSpawner = new BombSpawner(this, BOMB_KEY)
         const bombsGroup = this.bombSpawner.group
 
+        this.diamondSpawner = new DiamondSpawner(this, DIAMOND_KEY)
+        const diamondsGroup = this.diamondSpawner.group
+
         this.physics.add.collider(this.player, walls)
         this.physics.add.collider(this.rocks, walls)
 		this.physics.add.collider(bombsGroup, walls)
+        this.physics.add.collider(diamondsGroup, walls)
         this.physics.add.collider(this.player, bombsGroup, this.hitBomb, null, this)
+        this.physics.add.collider(this.player, diamondsGroup, this.hitDiamond, null, this)
 
-        this.physics.add.overlap(this.player, this.rocks, this.collectRock, null, this)
+        this.physics.add.overlap(this.player, this.rocks, this.mineRock, null, this)
 
-        this.keys = this.input.keyboard.addKeys('LEFT,RIGHT,UP,DOWN,Z,X')
+        this.keys = this.input.keyboard.addKeys('A,D,W,S,Z,X')
     }
 
-    collectRock(player, rock)
+    mineRock(player, rock)
 	{
-		rock.disableBody(true, true)
-
         this.scoreLabel.add(10)
-
+        rock.disableBody(true, true)
+        
         if (this.rocks.countActive(true) === 0)
         {
-            //  A new batch of rocks to collect
+            // a new batch of rocks to mine when 0 rocks left
             this.rocks.children.iterate((child) => {
                 child.enableBody(true, child.x, child.y, true, true)
             })
+            // spawns bomb and diamond when all rocks are mined
             this.bombSpawner.spawn(player.x)
+            this.diamondSpawner.spawn(player.x)
         }
 	}
     
     update ()
     {
+        //when its gameover give replay and highscores buttons
         if (this.gameOver)
         {
             let replayBtn = this.add.image(400, 300, 'replay')
@@ -88,15 +100,22 @@ export default class GameScreen extends Phaser.Scene {
                 this.scene.start('scoresscreen')
                 return this.gameOver = false
             });
+
+            let saveScoreBtn = this.add.image(400, 500, 'saveScore')
+            saveScoreBtn.setInteractive()
+            saveScoreBtn.on("pointerdown", ()=>{
+                window.localStorage.setItem(username, score)
+            })
         }
 
-        if (this.keys.LEFT.isDown)
+        //player movement
+        if (this.keys.A.isDown)
         {
             this.player.setVelocityX(-160)
 
             this.player.anims.play('left', true)
         }
-        else if (this.keys.RIGHT.isDown)
+        else if (this.keys.D.isDown)
         {
             this.player.setVelocityX(160)
 
@@ -109,13 +128,13 @@ export default class GameScreen extends Phaser.Scene {
             this.player.anims.play('turn')
         }
 
-        if (this.keys.UP.isDown)
+        if (this.keys.W.isDown)
         {
             this.player.setVelocityY(-160)
 
             this.player.anims.play('turn', true)
         }
-        else if (this.keys.DOWN.isDown)
+        else if (this.keys.S.isDown)
         {
             this.player.setVelocityY(160)
         }
@@ -135,17 +154,23 @@ export default class GameScreen extends Phaser.Scene {
 
 		this.gameOver = true
 	}
+
+    hitDiamond(player, diamond)
+    {
+        this.scoreLabel.add(50)
+        diamond.disableBody(true, true)
+    }
     
     //  The walls group contains the 3 walls
     createWalls()
     {
         const walls = this.physics.add.staticGroup()
 
-        //  Here we create the ground.
-        //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
+        // create the ground wall
+        // scaled to fit the width of the game (the original sprite is 400x32 in size)
         walls.create(400, 568, GROUND_KEY).setScale(2).refreshBody()
 
-        //  Now let's create some ledges
+        //create the smaller walls
         walls.create(600, 400, GROUND_KEY)
         walls.create(50, 250, GROUND_KEY)
         walls.create(750, 220, GROUND_KEY)
@@ -184,7 +209,7 @@ export default class GameScreen extends Phaser.Scene {
     createRocks()
     {
         //  Some rocks to mine, evenly spaced 70 pixels apart along the x axis
-        const rocks = this.physics.add.group()
+        const rocks = this.physics.add.staticGroup()
 
         rocks.createMultiple({
             key: ROCK_KEY,

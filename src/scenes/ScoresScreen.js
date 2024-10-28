@@ -1,8 +1,11 @@
 import Phaser from "phaser";
 
 export default class ScoresScreen extends Phaser.Scene {
-    constructor() {
+    constructor(username, score) {
         super('scoresscreen')
+
+        this.username = score
+        this.score = score
     }
     preload() {
         this.load.image('highscores_bg', '/assets/background.png')
@@ -18,5 +21,13 @@ export default class ScoresScreen extends Phaser.Scene {
             this.scene.start('startscreen')
         })
         this.add.image(400, 155, 'highscores_header')
+
+        this.highscore = this.createHighscore(400, 180, this.username)
     }
+
+    setHighscore(score)
+	{
+		this.score = score
+		this.updateScoreText()
+	}
 }
