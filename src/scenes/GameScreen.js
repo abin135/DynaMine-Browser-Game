@@ -104,7 +104,9 @@ export default class GameScreen extends Phaser.Scene {
             let saveScoreBtn = this.add.image(400, 500, 'saveScore')
             saveScoreBtn.setInteractive()
             saveScoreBtn.on("pointerdown", ()=>{
-                window.localStorage.setItem(username, score)
+                this.saveScore()
+                this.scene.start('scoresscreen')
+                return this.gameOver = false
             })
         }
 
@@ -247,4 +249,9 @@ export default class GameScreen extends Phaser.Scene {
 
 		return label
 	}
+
+    saveScore()
+    {
+        localStorage.setItem('highscore', JSON.stringify(this.scoreLabel.score))
+    }
 }

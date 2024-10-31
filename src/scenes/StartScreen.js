@@ -29,6 +29,8 @@ export default class StartScreen extends Phaser.Scene {
         scoresBtn.setInteractive()
         scoresBtn.on("pointerdown", ()=>{
             this.scene.start('scoresscreen')
+            
+            return this.scene.stop('inputscreen')
         });
 
     }

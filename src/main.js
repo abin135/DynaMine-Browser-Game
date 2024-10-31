@@ -1,8 +1,9 @@
-//import "./main.css"
+
 import Phaser from "phaser"
 import StartScreen from "./scenes/StartScreen.js"
 import GameScreen from "./scenes/GameScreen.js"
 import ScoresScreen from "./scenes/ScoresScreen.js"
+import InputScreen from "./scenes/InputScreen.js"
 
 const config = {
     type: Phaser.AUTO,
@@ -14,7 +15,7 @@ const config = {
             debug: false
         }
     },
-    scene: [StartScreen, GameScreen, ScoresScreen]
+    scene: [StartScreen, GameScreen, ScoresScreen, InputScreen]
 }
 
 export default new Phaser.Game(config)
