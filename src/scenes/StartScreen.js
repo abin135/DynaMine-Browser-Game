@@ -9,7 +9,9 @@ export default class StartScreen extends Phaser.Scene {
         this.load.image('start_bg', '/assets/background.png')
         this.load.image("title_img", "/assets/title.png")
         this.load.image("start_img", "/assets/start.png")
-        this.load.image("highscores_img", "/assets/highscores.png")
+        this.load.image("howToPlay_img", "/assets/howtoplay.png")
+
+        this.load.bitmapFont('arcade', '/assets/arcade.png', '/assets/arcade.xml')
     }
 
     //create start screen
@@ -25,12 +27,11 @@ export default class StartScreen extends Phaser.Scene {
         });
         
         //highscore picture starts the scoresscreen
-        let scoresBtn = this.add.image(400, 400, 'highscores_img')
+        let scoresBtn = this.add.image(400, 400, 'howToPlay_img')
         scoresBtn.setInteractive()
         scoresBtn.on("pointerdown", ()=>{
-            this.scene.start('scoresscreen')
-            
-            return this.scene.stop('inputscreen')
+            let screenCenterX = this.cameras.main.worldView.x + this.cameras.main.width / 2
+            this.add.bitmapText(screenCenterX, 470, 'arcade', `Move with WASD. Avoid TNT. \n\nCollect diamonds and mine rocks.`).setTint(0xffffff).setScale(0.5).setOrigin(0.5)
         });
 
     }

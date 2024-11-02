@@ -32,7 +32,6 @@ export default class GameScreen extends Phaser.Scene {
         this.load.image(DIAMOND_KEY, '/assets/diamond.png')
         this.load.spritesheet(DUDE_KEY, '/assets/dude.png', { frameWidth: 32, frameHeight: 48 })
         this.load.image('replay', '/assets/replay.png')
-        this.load.image('highscoresRed', '/assets/highscoresBtn.png')
         this.load.image('saveScore', '/assets/savescores.png')
     }
 
@@ -93,15 +92,8 @@ export default class GameScreen extends Phaser.Scene {
                 this.scene.restart('gamescreen')
                 return this.gameOver = false
             });
-    
-            let highscoresBtn = this.add.image(400, 400, 'highscoresRed')
-            highscoresBtn.setInteractive()
-            highscoresBtn.on("pointerdown", ()=>{
-                this.scene.start('scoresscreen')
-                return this.gameOver = false
-            });
 
-            let saveScoreBtn = this.add.image(400, 500, 'saveScore')
+            let saveScoreBtn = this.add.image(400, 400, 'saveScore')
             saveScoreBtn.setInteractive()
             saveScoreBtn.on("pointerdown", ()=>{
                 this.saveScore()
