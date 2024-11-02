@@ -5,6 +5,11 @@ import DiamondSpawner from "./DiamondSpawner"
 
 const GROUND_KEY = 'ground'
 const DUDE_KEY = 'dude'
+const DUDELEFT_KEY = 'dudeLeft'
+const DUDERIGHT_KEY ='dudeRight'
+const DUDEUP_KEY = 'dudeUp'
+const DUDEDOWN_KEY = 'dudeDown'
+const DUDEDEATH_KEY = 'dudeDeath'
 const ROCK_KEY = 'rock'
 const BOMB_KEY = 'bomb'
 const DIAMOND_KEY = 'diamond'
@@ -30,7 +35,12 @@ export default class GameScreen extends Phaser.Scene {
         this.load.image(ROCK_KEY, '/assets/rock.png')
         this.load.image(BOMB_KEY, '/assets/bomb.png')
         this.load.image(DIAMOND_KEY, '/assets/diamond.png')
-        this.load.spritesheet(DUDE_KEY, '/assets/dude.png', { frameWidth: 32, frameHeight: 48 })
+        this.load.spritesheet(DUDE_KEY, '/assets/dude.png', { frameWidth: 32, frameHeight: 32 })
+        this.load.spritesheet(DUDELEFT_KEY, '/assets/walk-left.png', { frameWidth: 32, frameHeight: 32 })
+        this.load.spritesheet(DUDERIGHT_KEY, '/assets/walk-right.png', { frameWidth: 32, frameHeight: 32 })
+        this.load.spritesheet(DUDEUP_KEY, '/assets/walk-back.png', { frameWidth: 32, frameHeight: 32 })
+        this.load.spritesheet(DUDEDOWN_KEY, '/assets/walk-front.png', { frameWidth: 32, frameHeight: 32 })
+        this.load.spritesheet(DUDEDEATH_KEY, '/assets/death-front.png', { frameWidth: 32, frameHeight: 32 })
         this.load.image('replay', '/assets/replay.png')
         this.load.image('saveScore', '/assets/savescores.png')
     }
@@ -126,11 +136,13 @@ export default class GameScreen extends Phaser.Scene {
         {
             this.player.setVelocityY(-160)
 
-            this.player.anims.play('turn', true)
+            this.player.anims.play('up', true)
         }
         else if (this.keys.S.isDown)
         {
             this.player.setVelocityY(160)
+
+            this.player.anims.play('down', true)
         }
         else 
         {
@@ -144,7 +156,7 @@ export default class GameScreen extends Phaser.Scene {
 
 		player.setTint(0xff0000)
 
-		player.anims.play('turn')
+		player.anims.play('death')
 
 		this.gameOver = true
 	}
@@ -174,28 +186,43 @@ export default class GameScreen extends Phaser.Scene {
         
     createPlayer()
 	{
-        const player = this.physics.add.sprite(100, 450, DUDE_KEY)
+        const player = this.physics.add.sprite(100, 450, DUDE_KEY).setScale(1.4)
 		player.setCollideWorldBounds(true)
 
 		this.anims.create({
 			key: 'left',
-			frames: this.anims.generateFrameNumbers(DUDE_KEY, { start: 0, end: 3 }),
+			frames: this.anims.generateFrameNumbers(DUDELEFT_KEY, { start: 0, end: 4 }),
 			frameRate: 10,
 			repeat: -1
 		})
 		
 		this.anims.create({
-			key: 'turn',
-			frames: [ { key: DUDE_KEY, frame: 4 } ],
-			frameRate: 20
+			key: 'down',
+			frames: this.anims.generateFrameNumbers(DUDEDOWN_KEY, { start: 0, end: 4 }),
+			frameRate: 10,
+            repeat: -1
+		})
+
+        this.anims.create({
+			key: 'up',
+			frames: this.anims.generateFrameNumbers(DUDEUP_KEY, { start: 0, end: 4 }),
+			frameRate: 10,
+            repeat: -1
 		})
 		
 		this.anims.create({
 			key: 'right',
-			frames: this.anims.generateFrameNumbers(DUDE_KEY, { start: 5, end: 8 }),
+			frames: this.anims.generateFrameNumbers(DUDERIGHT_KEY, { start: 0, end: 4 }),
 			frameRate: 10,
 			repeat: -1
 		})
+
+        this.anims.create({
+            key: 'death',
+            frames: this.anims.generateFrameNumbers(DUDEDEATH_KEY, { start: 0, end: 4 }),
+            frameRate: 10,
+            repeat: -1
+        })
 
         return player
 	}
