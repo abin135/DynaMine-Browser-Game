@@ -50,3 +50,11 @@ application.
 
 ## Link to Project
 (https://github.com/abin135/DynaMine-Browser-Game)
+
+<img width="608" alt="{CDAACE52-2086-40CB-A227-FB1F757FB6EB}" src="https://github.com/user-attachments/assets/342689e6-4a35-4697-b3fe-cd61d31cb87d" />
+
+<img width="622" alt="{1D4D5127-AFEB-42EA-B7C3-35E8CAEC0625}" src="https://github.com/user-attachments/assets/78067a1c-9345-4414-b9f7-64a49fb11cfc" />
+
+<img width="619" alt="{E569368E-EADC-455A-A429-FD2F697A6C75}" src="https://github.com/user-attachments/assets/a3a274d0-7852-4904-adda-a2a84384903e" />
+
+<img width="514" alt="{B3803EAE-4133-4283-A442-840D392B481A}" src="https://github.com/user-attachments/assets/2dd4dd96-7fff-4fc7-bdad-396308bcf0d4" />
